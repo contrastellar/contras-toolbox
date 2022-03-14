@@ -18,8 +18,7 @@
                 Sleep 750
                 Send {F11}
                 Sleep 750
-        Loop ; The actual loop. Sends W, waits about 5 seconds, sends S. Should be enough to fool an anti-afk. Customizable, of
- course.
+        Loop
         {
 
                 Send {F11}
