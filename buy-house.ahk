@@ -40,12 +40,9 @@
         Return
 
 2::Pause ; Pause the script (and resume).
-
 3:: Reload ; restart script
 
 ;--V Functions down here V--
-
-
 RandSleep(x,y) ; Neat function to have random sleep times.
 {
         Random, rand, %x%, %y%
