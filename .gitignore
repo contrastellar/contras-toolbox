@@ -5,7 +5,7 @@ python/Python/
 .vscode
 
 # ignore personal json files
-python/akami-access.json
+python/akamai-access.json
 
 # ignore secret files
 *.secret
