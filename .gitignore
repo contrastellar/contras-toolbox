@@ -1,2 +1,11 @@
+# ignore nested repos
 python/Python/
+
+# ignore vscode settings
 .vscode
+
+# ignore personal json files
+python/akami-access.json
+
+# ignore secret files
+*.secret
