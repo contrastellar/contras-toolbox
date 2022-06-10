@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 import argparse
 
 # Declare arguments
-parser = argparse.ArgumentParser(description='Basic script to bounce off the akami api, returning a response code')
+parser = argparse.ArgumentParser(description='Basic script to bounce off the akamai api, returning a response code')
 parser.add_argument('credential_file', metavar='credential_file', type=str)
 parser.add_argument('-v', '--verbose', help="increase output verbosity", action='store_true')
 args = parser.parse_args()
@@ -27,12 +27,15 @@ if verboseSetting:
 credFile = open(args.credential_file)
 credData = json.load(credFile)
 credFile.close()
+if verboseSetting:
+    print('File has been closed')
 
 # Fliter the json information down to usable variables
-file_client_secret = credData['client_secret']
 host = credData['host']
-file_access_token = credData['access_token']
 file_client_token = credData['client_token']
+file_client_secret = credData['client_secret']
+file_access_token = credData['access_token']
+debug("Connecting to " + host)
 
 # start API request
 s = requests.session()
@@ -43,5 +46,5 @@ s.auth = EdgeGridAuth(
 )
 
 apiResult = s.get(urljoin(host, '/contract-api/v1/contracts/identifiers'))
-print(apiResult.status_code)
+print("Status code: " + str(apiResult.status_code))
 exit
