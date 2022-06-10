@@ -1,3 +1,7 @@
+; this script is currently deprecated due to ffxiv housing changes
+; its also technically against ffxiv TOS
+; use at your own risk ig
+
 #SingleInstance, Force ; Forces a single instance of the script. Useful if you edit and re-open your script many times.
 #InstallKeybdHook ; Keyboard hook. Higher chances to make it work with your game.
 
