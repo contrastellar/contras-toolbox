@@ -73,7 +73,7 @@ def main():
     output = {}
     i = 0
     for d in parsedCardFile['data']:
-        output[d["name"]] = i+1
+        output[i+1] = d["name"]
         i = i + 1
         Merge(masterOutput, output)
     
@@ -97,7 +97,7 @@ def main():
         output2 = {}
 
         for d in parsedCardFile['data']:
-            output2[d["name"]] = i + 1
+            output2[i+1] = d["name"]
             i = i + 1
             Merge(masterOutput, output2)
 
