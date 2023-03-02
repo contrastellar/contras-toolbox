@@ -11,7 +11,7 @@ def jsonParse(obj):
 def main():
 
     # Current dir the script is running in, can be useful for debugging
-    script_dir = os.path.abspath( os.path.dirname( __file__ ) )
+    script_dir = os.path.abspath(os.path.dirname( __file__ ))
 
     description = "Script to pull card info from api.scryfall.com based on specific set"
     parser = argparse.ArgumentParser(description=description)
@@ -31,6 +31,12 @@ def main():
     if(verboseSetting): print("URL = " + str(response_URL))
 
     if(verboseSetting): print("Response code: " + str(responseData.status_code) + "\n")
+
+    parsedFile = json.loads(jsonParse(responseData.json()))
+    print(parsedFile['data'][0]['set_name'])
+
+    print("\n\n--!-- Does output have \"next page\"?")
+    print(parsedFile['has_more'])
 
 
 if __name__ == "__main__":
