@@ -1,5 +1,3 @@
-# https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Aone&unique=prints
-
 import os, requests, json, argparse
 
 # Return a string object of the json passed in via obj
@@ -47,7 +45,7 @@ def main():
 
     setNameFromSearch = parsedSetFile['name']
     setNameFromCard = parsedCardFile['data'][0]['set_name']
-    
+
     if(verboseSetting):
         print("Are strings the same?")
         if(setNameFromCard == setNameFromSearch):
