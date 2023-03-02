@@ -26,7 +26,7 @@ def main():
     # Used to verify that the two sets are actually identical.
     cardSetURL = "https://api.scryfall.com/sets/" + user_set
 
-    cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints"
+    cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=1"
 
     setData = requests.get(cardSetURL)
     responseData = requests.get(cardListURL)
@@ -51,10 +51,24 @@ def main():
         if(setNameFromCard == setNameFromSearch):
             print("Yes!")
         else:
-            print("No!")
+            print("No! Exiting!")
+            return -1
+    print("\n\n")
+
+    """
+        At this point, we can pretty much get on with it
+    """
+    print("Total cards --   " + str(parsedCardFile["total_cards"]))
 
     print("\n\n--!-- Does output have \"next page\"?")
     print(parsedCardFile['has_more'])
+
+    output = {}
+    
+    
+    hasNext = parsedCardFile['has_more']
+    while(hasNext):
+        break
 
 
 if __name__ == "__main__":
