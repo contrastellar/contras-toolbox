@@ -1,4 +1,8 @@
-import os, requests, json, argparse
+import os, requests, json, argparse, time
+
+def Merge(dict1, dict2):
+    return(dict1.update(dict2))
+
 
 # Return a string object of the json passed in via obj
 # !! (Likely) Unused
@@ -20,13 +24,14 @@ def main():
     args = parser.parse_args()
     verboseSetting = bool(args.verbose)
     user_set = str(args.set)
+    pageNum = 1
 
     if(verboseSetting): print("Outputting verbosely\n"+script_dir)
 
     # Used to verify that the two sets are actually identical.
     cardSetURL = "https://api.scryfall.com/sets/" + user_set
 
-    cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=1"
+    cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=" + str(pageNum)
 
     setData = requests.get(cardSetURL)
     responseData = requests.get(cardListURL)
@@ -63,20 +68,48 @@ def main():
     print("\n\n--!-- Does output have \"next page\"?")
     print(parsedCardFile['has_more'])
 
+    masterOutput = {}
     output = {}
     i = 0
     for d in parsedCardFile['data']:
         print(d["name"] + "   " + d["collector_number"])
-        output[i] = d["name"]
+        output[d["name"]] = i+1
         i = i + 1
+        Merge(masterOutput, output)
     
+    print("Sleeping for 1s")
+    time.sleep(1)
+
     # print(output)
     # Now, can go into the "has more"
     hasNext = parsedCardFile['has_more']
     while(hasNext):
         print("more")
-        
+        pageNum += 1
+        cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=" + str(pageNum)
 
+        responseData = requests.get(cardListURL)
+        if(verboseSetting): print("Card URL =   " + str(cardListURL))
+        if(verboseSetting): print("Response code: " + str(responseData.status_code) + "\n")
+        parsedCardFile = json.loads(jsonParse(responseData.json()))
+        hasNext = parsedCardFile['has_more']
+        print("more? " + str(hasNext))
+
+        output2 = {}
+        for d in parsedCardFile['data']:
+            #print(d["name"] + "   " + d["collector_number"])
+            output2[d["name"]] = i + 1
+            i = i + 1
+            Merge(masterOutput, output2)
+        print("Sleeping for 1s")
+        time.sleep(1)
+
+    # Serializing json
+    json_object = json.dumps(masterOutput, indent=4)
+ 
+    # Writing to sample.json
+    with open("output.json", "w") as outfile:
+        outfile.write(json_object)
 
 if __name__ == "__main__":
     main()
