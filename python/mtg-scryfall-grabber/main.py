@@ -64,12 +64,18 @@ def main():
     print(parsedCardFile['has_more'])
 
     output = {}
+    i = 0
     for d in parsedCardFile['data']:
-        print(d)
+        print(d["name"] + "   " + d["collector_number"])
+        output[i] = d["name"]
+        i = i + 1
     
+    # print(output)
+    # Now, can go into the "has more"
     hasNext = parsedCardFile['has_more']
     while(hasNext):
-        break
+        print("more")
+        
 
 
 if __name__ == "__main__":
