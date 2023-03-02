@@ -12,3 +12,6 @@ python/akamai-access.json
 
 # ignore secret files
 *.secret
+
+# ignore output files
+output.json

@@ -1,6 +1,8 @@
-# https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Aone&unique=prints
+import os, requests, json, argparse, time
 
-import os, requests, json, argparse
+def Merge(dict1, dict2):
+    return(dict1.update(dict2))
+
 
 # Return a string object of the json passed in via obj
 # !! (Likely) Unused
@@ -22,22 +24,91 @@ def main():
     args = parser.parse_args()
     verboseSetting = bool(args.verbose)
     user_set = str(args.set)
+    pageNum = 1
 
     if(verboseSetting): print("Outputting verbosely\n"+script_dir)
 
-    response_URL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints"
-    responseData = requests.get(response_URL)
+    # Used to verify that the two sets are actually identical.
+    cardSetURL = "https://api.scryfall.com/sets/" + user_set
 
-    if(verboseSetting): print("URL = " + str(response_URL))
+    cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=" + str(pageNum)
+
+    setData = requests.get(cardSetURL)
+    responseData = requests.get(cardListURL)
+
+    if(verboseSetting): print("Set URL  =   " + str(cardSetURL))
+    if(verboseSetting): print("Card URL =   " + str(cardListURL))
 
     if(verboseSetting): print("Response code: " + str(responseData.status_code) + "\n")
 
-    parsedFile = json.loads(jsonParse(responseData.json()))
-    print(parsedFile['data'][0]['set_name'])
+    parsedSetFile = json.loads(jsonParse(setData.json()))
+    parsedCardFile = json.loads(jsonParse(responseData.json()))
 
-    print("\n\n--!-- Does output have \"next page\"?")
-    print(parsedFile['has_more'])
+    print("Card set from the set search ...  ? -> " + parsedSetFile['name'])
 
+    print("Card set from the card ID    ... " + parsedCardFile["data"][0]["collector_number"] + "? -> "+ parsedCardFile['data'][0]['set_name'])
+
+    setNameFromSearch = parsedSetFile['name']
+    setNameFromCard = parsedCardFile['data'][0]['set_name']
+
+    if(verboseSetting):
+        print("Are strings the same?")
+        if(setNameFromCard == setNameFromSearch):
+            print("Yes!")
+        else:
+            print("No! Exiting!")
+            return -1
+    print("\n\n")
+
+    """
+        At this point, we can pretty much get on with it
+    """
+    if(verboseSetting):
+        print("Total cards --   " + str(parsedCardFile["total_cards"]))
+
+        print("\n\n--!-- Does output have \"next page\"?")
+        print(parsedCardFile['has_more'])
+
+    masterOutput = {}
+    output = {}
+    i = 0
+    for d in parsedCardFile['data']:
+        output[i+1] = d["name"]
+        i = i + 1
+        Merge(masterOutput, output)
+    
+    # Sleeps are used to not get blocked by the API
+    time.sleep(1)
+
+    # Now, can go into the "has more"
+    hasNext = parsedCardFile['has_more']
+
+    while(hasNext):
+
+        pageNum += 1
+        cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=" + str(pageNum)
+
+        responseData = requests.get(cardListURL)
+        if(verboseSetting): print("Card URL =   " + str(cardListURL))
+        if(verboseSetting): print("Response code: " + str(responseData.status_code) + "\n")
+        parsedCardFile = json.loads(jsonParse(responseData.json()))
+        hasNext = parsedCardFile['has_more']
+
+        output2 = {}
+
+        for d in parsedCardFile['data']:
+            output2[i+1] = d["name"]
+            i = i + 1
+            Merge(masterOutput, output2)
+
+        time.sleep(1)
+
+    # Serializing json
+    json_object = json.dumps(masterOutput, indent=4)
+ 
+    # Writing to sample.json
+    with open("output.json", "w") as outfile:
+        outfile.write(json_object)
 
 if __name__ == "__main__":
     main()

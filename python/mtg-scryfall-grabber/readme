@@ -1,0 +1,7 @@
+# What's going on here?
+
+Well, prior to doing some funny stuff with my server, and yadda yadda, this is where I'm keeping track of my "pull from a rest API to create things in a spreadsheet" program.
+
+Hey dipshit (me), here's how you compile into a C file then to a Binary so you can in theory automate this.
+
+https://stackoverflow.com/questions/39913847/is-there-a-way-to-compile-a-python-application-into-static-binary
