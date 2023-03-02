@@ -63,28 +63,28 @@ def main():
     """
         At this point, we can pretty much get on with it
     """
-    print("Total cards --   " + str(parsedCardFile["total_cards"]))
+    if(verboseSetting):
+        print("Total cards --   " + str(parsedCardFile["total_cards"]))
 
-    print("\n\n--!-- Does output have \"next page\"?")
-    print(parsedCardFile['has_more'])
+        print("\n\n--!-- Does output have \"next page\"?")
+        print(parsedCardFile['has_more'])
 
     masterOutput = {}
     output = {}
     i = 0
     for d in parsedCardFile['data']:
-        print(d["name"] + "   " + d["collector_number"])
         output[d["name"]] = i+1
         i = i + 1
         Merge(masterOutput, output)
     
-    print("Sleeping for 1s")
+    # Sleeps are used to not get blocked by the API
     time.sleep(1)
 
-    # print(output)
     # Now, can go into the "has more"
     hasNext = parsedCardFile['has_more']
+
     while(hasNext):
-        print("more")
+
         pageNum += 1
         cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=" + str(pageNum)
 
@@ -93,15 +93,14 @@ def main():
         if(verboseSetting): print("Response code: " + str(responseData.status_code) + "\n")
         parsedCardFile = json.loads(jsonParse(responseData.json()))
         hasNext = parsedCardFile['has_more']
-        print("more? " + str(hasNext))
 
         output2 = {}
+
         for d in parsedCardFile['data']:
-            #print(d["name"] + "   " + d["collector_number"])
             output2[d["name"]] = i + 1
             i = i + 1
             Merge(masterOutput, output2)
-        print("Sleeping for 1s")
+
         time.sleep(1)
 
     # Serializing json
