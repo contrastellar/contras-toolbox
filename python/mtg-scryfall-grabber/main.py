@@ -23,10 +23,12 @@ def main():
     verboseSetting = bool(args.verbose)
     user_set = str(args.set)
 
-    if(verboseSetting): print("\n"+script_dir)
+    if(verboseSetting): print("Outputting verbosely\n"+script_dir)
 
-    response_URL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3Aone&unique=prints"
+    response_URL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints"
     responseData = requests.get(response_URL)
+
+    if(verboseSetting): print("URL = " + str(response_URL))
 
     if(verboseSetting): print("Response code: " + str(responseData.status_code) + "\n")
 
