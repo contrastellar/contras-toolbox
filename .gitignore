@@ -1,6 +1,9 @@
 # ignore nested repos
 python/Python/
 
+# ignore pycache
+python/__pycache__
+
 # ignore vscode settings
 .vscode
 
