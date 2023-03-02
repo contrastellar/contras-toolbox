@@ -64,7 +64,8 @@ def main():
     print(parsedCardFile['has_more'])
 
     output = {}
-    
+    for d in parsedCardFile['data']:
+        print(d)
     
     hasNext = parsedCardFile['has_more']
     while(hasNext):
