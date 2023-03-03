@@ -1,4 +1,5 @@
-import os, requests, json, argparse, time
+import os, requests, json, argparse
+import GrabCards
 
 def Merge(dict1, dict2):
     return(dict1.update(dict2))
@@ -53,7 +54,7 @@ def main():
         print("Are strings the same?")
         if(setNameFromCard == setNameFromSearch):
             print("Yes!")
-            print("\n\n")
+            
         else:
             print("No! Exiting!")
             print("\n\n")
@@ -68,42 +69,9 @@ def main():
         print("\n\n--!-- Does output have \"next page\"?")
         print(parsedCardFile['has_more'])
 
-    masterOutput = {}
-    output = {}
-    i = 0
-    for d in parsedCardFile['data']:
-        output[i+1] = d["name"]
-        i = i + 1
-        Merge(masterOutput, output)
-    
-    # Sleeps are used to not get blocked by the API
-    time.sleep(1)
-
-    # Now, can go into the "has more"
-    hasNext = parsedCardFile['has_more']
-
-    while(hasNext):
-
-        pageNum += 1
-        cardListURL = "https://api.scryfall.com/cards/search?include_extras=true&include_variations=true&order=set&q=e%3A"+ user_set +"&unique=prints&page=" + str(pageNum)
-
-        responseData = requests.get(cardListURL)
-        if(verboseSetting): print("Card URL =   " + str(cardListURL))
-        if(verboseSetting): print("Response code: " + str(responseData.status_code) + "\n")
-        parsedCardFile = json.loads(jsonParse(responseData.json()))
-        hasNext = parsedCardFile['has_more']
-
-        output2 = {}
-
-        for d in parsedCardFile['data']:
-            output2[i+1] = d["name"]
-            i = i + 1
-            Merge(masterOutput, output2)
-
-        time.sleep(1)
-
+    MasterOutput = GrabCards.GrabCards(cardSetURL, cardListURL, setData, responseData, verboseSetting)
     # Serializing json
-    json_object = json.dumps(masterOutput, indent=4)
+    json_object = json.dumps(MasterOutput, indent=4)
  
     # Writing to sample.json
     with open("output.json", "w") as outfile:

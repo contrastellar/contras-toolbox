@@ -3,6 +3,7 @@ python/Python/
 
 # ignore pycache
 python/__pycache__
+python/mtg-scryfall-grabber/__pycache__
 
 # ignore vscode settings
 .vscode
