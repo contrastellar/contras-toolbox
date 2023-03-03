@@ -3,9 +3,7 @@ import os, requests, json, argparse, time
 def Merge(dict1, dict2):
     return(dict1.update(dict2))
 
-
 # Return a string object of the json passed in via obj
-# !! (Likely) Unused
 def jsonParse(obj):
     text = json.dumps(obj, sort_keys=True, indent=3)
     return text
@@ -44,9 +42,9 @@ def main():
     parsedSetFile = json.loads(jsonParse(setData.json()))
     parsedCardFile = json.loads(jsonParse(responseData.json()))
 
-    print("Card set from the set search ...  ? -> " + parsedSetFile['name'])
+    if(verboseSetting): print("Card set from the set search ...  ? -> " + parsedSetFile['name'])
 
-    print("Card set from the card ID    ... " + parsedCardFile["data"][0]["collector_number"] + "? -> "+ parsedCardFile['data'][0]['set_name'])
+    if(verboseSetting): print("Card set from the card ID    ... " + parsedCardFile["data"][0]["collector_number"] + "? -> "+ parsedCardFile['data'][0]['set_name'])
 
     setNameFromSearch = parsedSetFile['name']
     setNameFromCard = parsedCardFile['data'][0]['set_name']
@@ -55,10 +53,11 @@ def main():
         print("Are strings the same?")
         if(setNameFromCard == setNameFromSearch):
             print("Yes!")
+            print("\n\n")
         else:
             print("No! Exiting!")
+            print("\n\n")
             return -1
-    print("\n\n")
 
     """
         At this point, we can pretty much get on with it
